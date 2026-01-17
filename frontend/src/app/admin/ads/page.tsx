@@ -204,32 +204,29 @@ export default function AdsAdminPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="image">Image {!editingAd && "*"}</Label>
-                    <div
-                      className="border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 hover:border-blue-400 transition-colors"
-                      onClick={() => fileInputRef.current?.click()}
-                      onKeyDown={(e) => e.key === 'Enter' && fileInputRef.current?.click()}
-                      tabIndex={0}
-                      role="button"
-                      aria-label="Click to upload image"
+                    <Label htmlFor="ad-image-upload">Image {!editingAd && "*"}</Label>
+                    <label
+                      htmlFor="ad-image-upload"
+                      className="block border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 hover:border-blue-400 transition-colors focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-200"
                     >
                       {previewUrl ? (
-                        <img src={previewUrl} alt="Preview" className="max-h-40 mx-auto rounded pointer-events-none" />
+                        <img src={previewUrl} alt="Preview" className="max-h-40 mx-auto rounded" />
                       ) : (
-                        <div className="py-8 pointer-events-none">
+                        <div className="py-8">
                           <Upload className="h-8 w-8 mx-auto text-gray-400 mb-2" />
                           <p className="text-sm text-gray-500">Click to upload image</p>
                           <p className="text-xs text-gray-400 mt-1">JPG, PNG, GIF up to 10MB</p>
                         </div>
                       )}
-                    </div>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileSelect}
-                      className="hidden"
-                    />
+                      <input
+                        id="ad-image-upload"
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileSelect}
+                        className="sr-only"
+                      />
+                    </label>
                   </div>
 
                   <div>

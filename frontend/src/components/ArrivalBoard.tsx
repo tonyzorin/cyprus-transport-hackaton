@@ -1,6 +1,7 @@
 "use client"
 
-import { Bus, Clock, MapPin, AlertTriangle, Info, AlertCircle } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Bus, Clock, MapPin, AlertTriangle, Info, AlertCircle, Calendar } from "lucide-react"
 import { formatTimeLeft, getTimeColor, cn } from "@/lib/utils"
 
 interface Arrival {
@@ -37,6 +38,30 @@ interface ArrivalBoardProps {
 }
 
 export function ArrivalBoard({ stopInfo, arrivals, alerts = [], loading, error }: ArrivalBoardProps) {
+  const [currentTime, setCurrentTime] = useState(new Date())
+
+  // Update time every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  // Format date and time for display
+  const formattedDate = currentTime.toLocaleDateString("en-CY", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  })
+  
+  const formattedTime = currentTime.toLocaleTimeString("en-CY", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  })
+
   if (loading) {
     return (
       <div className="h-full flex items-center justify-center bg-gradient-to-b from-blue-900 to-blue-950">
@@ -61,18 +86,31 @@ export function ArrivalBoard({ stopInfo, arrivals, alerts = [], loading, error }
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-b from-blue-900 to-blue-950 text-white">
-      {/* Header with stop info */}
+      {/* Header with stop info and date/time */}
       <div className="bg-blue-800/50 p-4 border-b border-blue-700">
-        <div className="flex items-center gap-3">
-          <div className="bg-blue-600 p-2 rounded-lg">
-            <MapPin className="h-6 w-6" />
+        <div className="flex items-center justify-between">
+          {/* Stop info - left side */}
+          <div className="flex items-center gap-3">
+            <div className="bg-blue-600 p-2 rounded-lg">
+              <MapPin className="h-6 w-6" />
+            </div>
+            <div>
+              <h2 className="text-xl font-bold truncate">
+                {stopInfo?.stop_name || "Bus Stop"}
+              </h2>
+              <p className="text-blue-300 text-sm">
+                Stop ID: {stopInfo?.stop_id || "Unknown"}
+              </p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-xl font-bold truncate">
-              {stopInfo?.stop_name || "Bus Stop"}
-            </h2>
+          
+          {/* Date/Time - right side */}
+          <div className="text-right">
+            <p className="text-3xl font-bold text-white tabular-nums">
+              {formattedTime}
+            </p>
             <p className="text-blue-300 text-sm">
-              Stop ID: {stopInfo?.stop_id || "Unknown"}
+              {formattedDate}
             </p>
           </div>
         </div>
@@ -110,9 +148,10 @@ export function ArrivalBoard({ stopInfo, arrivals, alerts = [], loading, error }
             Real-time data
           </span>
           <span>
-            Updated: {new Date().toLocaleTimeString("en-CY", { 
+            Updated: {currentTime.toLocaleTimeString("en-CY", { 
               hour: "2-digit", 
-              minute: "2-digit" 
+              minute: "2-digit",
+              hour12: false
             })}
           </span>
         </div>
@@ -127,12 +166,12 @@ function ArrivalRow({ arrival, index }: { arrival: Arrival; index: number }) {
 
   return (
     <div 
-      className="p-4 flex items-center gap-4 hover:bg-blue-800/30 transition-colors animate-fade-in"
+      className="p-4 flex items-center gap-5 hover:bg-blue-800/30 transition-colors animate-fade-in"
       style={{ animationDelay: `${index * 100}ms` }}
     >
       {/* Route badge */}
       <div
-        className="min-w-[70px] h-12 rounded-lg flex items-center justify-center font-bold text-lg shadow-lg"
+        className="min-w-[90px] h-16 rounded-xl flex items-center justify-center font-bold text-3xl shadow-lg"
         style={{ backgroundColor: routeColor, color: textColor }}
       >
         {arrival.route_short_name}
@@ -140,21 +179,21 @@ function ArrivalRow({ arrival, index }: { arrival: Arrival; index: number }) {
 
       {/* Destination */}
       <div className="flex-1 min-w-0">
-        <p className="font-medium text-white truncate">
+        <p className="font-semibold text-white text-xl truncate">
           {arrival.trip_headsign || "Unknown Destination"}
         </p>
-        <p className="text-blue-300 text-sm">
+        <p className="text-blue-300 text-base">
           {formatArrivalTime(arrival.arrival_time)}
         </p>
       </div>
 
       {/* Time left */}
       <div className="text-right">
-        <p className={`text-2xl font-bold ${getArrivalTimeColor(arrival.time_left)}`}>
+        <p className={`text-3xl font-bold ${getArrivalTimeColor(arrival.time_left)}`}>
           {formatTimeLeft(arrival.time_left)}
         </p>
         {arrival.is_live && (
-          <span className="text-xs text-green-400 flex items-center justify-end gap-1">
+          <span className="text-sm text-green-400 flex items-center justify-end gap-1">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
             Live
           </span>
@@ -202,19 +241,19 @@ function AlertBanner({ alerts }: { alerts: Alert[] }) {
   return (
     <div
       className={cn(
-        "p-3 flex items-center gap-3 text-white",
+        "p-4 flex items-start gap-3 text-white",
         alert.severity === "critical" && "bg-red-600 animate-pulse",
         alert.severity === "warning" && "bg-amber-500",
         alert.severity === "info" && "bg-blue-500"
       )}
     >
-      <Icon className="h-5 w-5 flex-shrink-0" />
+      <Icon className="h-6 w-6 flex-shrink-0 mt-0.5" />
       <div className="flex-1 min-w-0">
-        <p className="font-medium truncate">{alert.title}</p>
-        <p className="text-sm opacity-90 truncate">{alert.message}</p>
+        <p className="font-semibold text-base leading-tight">{alert.title}</p>
+        <p className="text-sm opacity-90 leading-snug">{alert.message}</p>
       </div>
       {alerts.length > 1 && (
-        <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
+        <span className="text-xs bg-white/20 px-2 py-1 rounded-full flex-shrink-0">
           +{alerts.length - 1} more
         </span>
       )}

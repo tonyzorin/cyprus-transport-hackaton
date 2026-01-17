@@ -128,10 +128,10 @@ export default function DisplayPage() {
   }, [fetchContent])
 
   return (
-    <div className="display-screen h-screen w-screen overflow-hidden bg-black">
-      <div className="h-full flex">
+    <div className="display-screen h-screen w-screen overflow-hidden bg-black p-2">
+      <div className="h-full flex gap-2">
         {/* Left side - Bus Arrivals (50%) */}
-        <div className="w-1/2 h-full flex flex-col">
+        <div className="w-1/2 h-full flex flex-col rounded-lg overflow-hidden">
           {/* Arrivals board with alerts */}
           <div className="flex-1 overflow-hidden">
             <ArrivalBoard
@@ -145,7 +145,7 @@ export default function DisplayPage() {
         </div>
 
         {/* Right side - Ads & News (50%) */}
-        <div className="w-1/2 h-full flex flex-col border-l-4 border-black">
+        <div className="w-1/2 h-full flex flex-col rounded-lg overflow-hidden">
           {/* Ad slideshow with mixed news */}
           <div className="flex-1">
             <AdSlideshow ads={ads} news={news} />

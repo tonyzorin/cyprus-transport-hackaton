@@ -43,13 +43,13 @@ export function AdSlideshow({ ads, news = [], defaultDuration = 10 }: AdSlidesho
   const progressRef = useRef<NodeJS.Timeout | null>(null)
   const slideRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Combine ads and news into a single slideshow
-  // Add placeholder slide when there are no ads
+  // Combine ads, news, and placeholder into a single slideshow
+  // Placeholder is always included to promote ad space
   const slides: SlideItem[] = [
     ...ads.map((ad): SlideItem => ({ type: "ad", data: ad })),
     ...news.map((item): SlideItem => ({ type: "news", data: item })),
-    // Add "Advertise Here" placeholder when no ads exist
-    ...(ads.length === 0 ? [{ type: "placeholder" } as SlideItem] : []),
+    // Always include "Advertise Here" placeholder
+    { type: "placeholder" } as SlideItem,
   ]
 
   // Get duration for current slide
@@ -199,23 +199,23 @@ function NewsSlide({ news }: { news: NewsItem }) {
       </div>
 
       {/* Content area - optimized for readability */}
-      <div className="flex-1 flex flex-col px-10 py-6 overflow-hidden">
+      <div className="flex-1 flex flex-col px-8 py-4 overflow-hidden">
         {/* Greek content (top half) */}
-        <div className="flex-1 flex flex-col justify-center border-b-2 border-amber-600/30 pb-6 mb-6">
-          <h2 className="text-5xl font-bold text-white mb-4 leading-tight drop-shadow-lg">
+        <div className="flex-1 flex flex-col justify-center border-b-2 border-amber-600/30 pb-4 mb-4">
+          <h2 className="text-4xl font-bold text-white mb-3 leading-tight drop-shadow-lg">
             {news.title_el}
           </h2>
-          <p className="text-amber-100 text-2xl leading-relaxed line-clamp-3 font-medium">
+          <p className="text-amber-100 text-xl leading-relaxed font-medium">
             {news.content_el}
           </p>
         </div>
 
         {/* English content (bottom half) */}
         <div className="flex-1 flex flex-col justify-center">
-          <h3 className="text-4xl font-bold text-amber-200 mb-3 leading-tight drop-shadow-md">
+          <h3 className="text-3xl font-bold text-amber-200 mb-2 leading-tight drop-shadow-md">
             {news.title_en || news.title_el}
           </h3>
-          <p className="text-amber-100/90 text-xl leading-relaxed line-clamp-3 font-medium">
+          <p className="text-amber-100/90 text-lg leading-relaxed font-medium">
             {news.content_en || news.content_el}
           </p>
         </div>
