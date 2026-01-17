@@ -121,9 +121,9 @@ export default function DisplayPage() {
     return () => clearInterval(arrivalsInterval)
   }, [fetchArrivals])
 
-  // Auto-refresh content every 5 minutes
+  // Auto-refresh content (ads, news, alerts) every 60 seconds
   useEffect(() => {
-    const contentInterval = setInterval(fetchContent, 300000)
+    const contentInterval = setInterval(fetchContent, 60000)
     return () => clearInterval(contentInterval)
   }, [fetchContent])
 

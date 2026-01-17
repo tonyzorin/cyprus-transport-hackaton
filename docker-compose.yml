@@ -4,18 +4,18 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:16-alpine
-    container_name: bus-signage-postgres
+    container_name: bus-hackaton-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${DB_USER:-signage}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-signage_password}
-      POSTGRES_DB: ${DB_DATABASE:-bus_signage}
+      POSTGRES_USER: ${DB_USER:-hackaton}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-hackaton_password}
+      POSTGRES_DB: ${DB_DATABASE:-bus_hackaton}
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
     ports:
       - "${DB_PORT:-5433}:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-signage} -d ${DB_DATABASE:-bus_signage}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-hackaton} -d ${DB_DATABASE:-bus_hackaton}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,12 +25,12 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: bus-signage-backend
+    container_name: bus-hackaton-backend
     restart: unless-stopped
     environment:
-      - DB_USER=${DB_USER:-signage}
-      - DB_PASSWORD=${DB_PASSWORD:-signage_password}
-      - DB_DATABASE=${DB_DATABASE:-bus_signage}
+      - DB_USER=${DB_USER:-hackaton}
+      - DB_PASSWORD=${DB_PASSWORD:-hackaton_password}
+      - DB_DATABASE=${DB_DATABASE:-bus_hackaton}
       - DB_HOST=postgres
       - DB_PORT=5432
     volumes:
@@ -48,7 +48,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: bus-signage-frontend
+    container_name: bus-hackaton-frontend
     restart: unless-stopped
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:${BACKEND_PORT:-8000}
@@ -62,4 +62,4 @@ services:
 
 networks:
   default:
-    name: bus-signage-network
+    name: bus-hackaton-network

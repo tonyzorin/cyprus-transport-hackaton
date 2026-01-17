@@ -1,82 +1,66 @@
-# Bus Signage - Cyprus Digital Displays
+# Bus Hackaton - Cyprus Digital Displays
 
-A SaaS platform for bus stop digital signage displays showing real-time bus arrivals alongside rotating ads, government news, and transport alerts.
+A SaaS platform for bus stop digital displays showing real-time bus arrivals alongside rotating ads, government news, and transport alerts.
 
 ## Features
 
 - **Real-time Bus Arrivals**: Scraped from Motion website with GTFS data enrichment
 - **Advertisement Slideshow**: Upload and manage ad images with configurable display duration
-- **Government News**: Ticker display for government announcements
+- **Government News**: Bilingual slides (Greek on top, English on bottom)
 - **Transport Alerts**: Service disruption notices with severity levels
 - **50/50 Split Display**: Bus arrivals on left, ads/news on right
+- **Progress Bar**: Shows time remaining until next slide
 
 ## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Display Screen                            │
+│                    Display Screen (50/50 split)             │
 ├─────────────────────────────┬───────────────────────────────┤
-│                             │                               │
-│     BUS ARRIVALS            │     ADS / NEWS                │
-│                             │                               │
-│  [Alert Banner if any]      │   ┌───────────────────────┐   │
+│  Stop: Makariou Avenue      │                               │
+│  Stop ID: 4000              │   ┌───────────────────────┐   │
 │                             │   │                       │   │
-│  Route 30  →  5 min         │   │   Ad Image            │   │
-│  Route 15  →  12 min        │   │   (slideshow)         │   │
-│  Route 7   →  18 min        │   │                       │   │
+│  Route 16  →  5 min  🟢     │   │   Ad / News Slide     │   │
+│  Route 21  →  12 min 🟢     │   │   (mixed slideshow)   │   │
+│  Route 27  →  18 min 🟢     │   │                       │   │
 │                             │   └───────────────────────┘   │
 │                             │                               │
-│  Stop: Makariou Avenue      │   Government News Ticker      │
-│                             │                               │
+│  [Alert Banner]             │   [Progress Bar]              │
+│  Real-time data | Updated   │                               │
 └─────────────────────────────┴───────────────────────────────┘
 ```
+
+### Content Types
+- **Ads**: Commercial advertisements with images
+- **Government News**: Bilingual slides (Greek/English) mixed with ads
+- **Transport Alerts**: Service disruptions shown above footer on arrivals side
 
 ## Tech Stack
 
 - **Backend**: Python 3.13, FastAPI, SQLAlchemy, PostgreSQL
-- **Frontend**: Next.js 14, React, Tailwind CSS, shadcn/ui
+- **Frontend**: Next.js 16.1, React 19, Tailwind CSS, shadcn/ui
 - **Infrastructure**: Docker Compose
 
 ## Quick Start
 
-### 1. Clone and Setup
-
-```bash
-cd bus-signage
-cp env.example .env
-```
-
-### 2. Start with Docker Compose
+### 1. Start with Docker Compose
 
 ```bash
 docker compose up -d
+```
+
+### 2. Sync GTFS Data
+
+```bash
+curl -X POST http://localhost:8000/api/gtfs/sync
 ```
 
 ### 3. Access the Application
 
 - **Frontend**: http://localhost:3001
 - **Backend API**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs
+- **API Docs**: 
 
-## Development
-
-### Backend Only
-
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-
-### Frontend Only
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
 
 ## API Endpoints
 
@@ -89,9 +73,9 @@ npm run dev
 - `PUT /api/ads/{id}` - Update ad
 - `DELETE /api/ads/{id}` - Delete ad
 
-### News
+### News (Bilingual)
 - `GET /api/news` - List all news
-- `POST /api/news` - Create news item
+- `POST /api/news` - Create news item (title_el, content_el, title_en, content_en)
 - `PUT /api/news/{id}` - Update news
 - `DELETE /api/news/{id}` - Delete news
 
@@ -112,10 +96,10 @@ Access display screens at:
 http://localhost:3001/display/{stop_id}
 ```
 
-Example stop IDs:
-- `LIM-001` - Limassol
-- `NIC-001` - Nicosia
-- `LAR-001` - Larnaca
+Example stop IDs (4-digit integers from GTFS):
+- `4000` - Pafou - Monovolikos 1
+- `6300` - 1 Apriliou - 17th Stop
+- `4338` - 1 Apriliou - 5th Kyperounta 1
 
 ## Admin Pages
 
@@ -142,9 +126,9 @@ Real-time arrivals are scraped from `motionbuscard.org.cy`.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| DB_USER | signage | PostgreSQL username |
-| DB_PASSWORD | signage_password | PostgreSQL password |
-| DB_DATABASE | bus_signage | Database name |
+| DB_USER | hackaton | PostgreSQL username |
+| DB_PASSWORD | hackaton_password | PostgreSQL password |
+| DB_DATABASE | bus_hackaton | Database name |
 | DB_HOST | postgres | Database host |
 | DB_PORT | 5433 | Database port |
 | BACKEND_PORT | 8000 | Backend API port |

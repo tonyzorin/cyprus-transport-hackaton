@@ -1,5 +1,5 @@
 """
-Bus Signage Backend - FastAPI Application
+Bus Hackaton Backend - FastAPI Application
 Main application entry point with API endpoints
 """
 import os
@@ -29,7 +29,7 @@ from app.routers import stops, arrivals, ads, news, alerts, gtfs
 async def lifespan(app: FastAPI):
     """Application lifespan events"""
     # Startup
-    logger.info("Starting Bus Signage Backend...")
+    logger.info("Starting Bus Hackaton Backend...")
     
     # Test database connection
     if test_connection():
@@ -42,13 +42,13 @@ async def lifespan(app: FastAPI):
     yield
     
     # Shutdown
-    logger.info("Shutting down Bus Signage Backend...")
+    logger.info("Shutting down Bus Hackaton Backend...")
 
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Bus Signage API",
-    description="API for bus stop digital signage system - arrivals, ads, news, and alerts",
+    title="Bus Hackaton API",
+    description="API for bus stop digital display system - arrivals, ads, news, and alerts",
     version="1.0.0",
     lifespan=lifespan
 )
@@ -80,7 +80,7 @@ app.include_router(gtfs.router, prefix="/api", tags=["GTFS"])
 async def root():
     """Root endpoint - API info"""
     return {
-        "name": "Bus Signage API",
+        "name": "Bus Hackaton API",
         "version": "1.0.0",
         "docs": "/docs",
         "endpoints": {

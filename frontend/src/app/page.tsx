@@ -20,7 +20,7 @@ export default function HomePage() {
               <Bus className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Bus Signage</h1>
+              <h1 className="text-xl font-bold text-gray-900">Bus Hackaton</h1>
               <p className="text-xs text-gray-500">Cyprus Digital Displays</p>
             </div>
           </div>
@@ -39,7 +39,7 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-16">
         <div className="text-center max-w-3xl mx-auto">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Digital Signage for Cyprus Bus Stops
+            Digital Displays for Cyprus Bus Stops
           </h2>
           <p className="text-lg text-gray-600 mb-8">
             Real-time bus arrivals, advertisements, government news, and transport alerts
@@ -201,7 +201,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t bg-white py-8">
         <div className="container mx-auto px-4 text-center text-gray-500 text-sm">
-          <p>Bus Signage System - Cyprus Digital Displays</p>
+          <p>Bus Hackaton - Cyprus Digital Displays</p>
           <p className="mt-1">Prototype Version 1.0</p>
         </div>
       </footer>

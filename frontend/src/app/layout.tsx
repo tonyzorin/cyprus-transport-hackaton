@@ -5,8 +5,8 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin", "greek"] })
 
 export const metadata: Metadata = {
-  title: "Bus Signage - Cyprus Bus Stop Digital Displays",
-  description: "Digital signage system for Cyprus bus stops showing real-time arrivals, ads, and news",
+  title: "Bus Hackaton - Cyprus Bus Stop Digital Displays",
+  description: "Digital display system for Cyprus bus stops showing real-time arrivals, ads, and news",
 }
 
 export default function RootLayout({

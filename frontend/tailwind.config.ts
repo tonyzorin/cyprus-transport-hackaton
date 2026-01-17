@@ -43,7 +43,7 @@ const config: Config = {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        // Custom colors for bus signage
+        // Custom colors for bus hackaton
         bus: {
           primary: "#1e40af",
           secondary: "#3b82f6",

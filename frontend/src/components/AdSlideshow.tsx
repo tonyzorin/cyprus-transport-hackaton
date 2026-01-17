@@ -28,6 +28,7 @@ interface NewsItem {
 type SlideItem = 
   | { type: "ad"; data: Ad }
   | { type: "news"; data: NewsItem }
+  | { type: "placeholder" }
 
 interface AdSlideshowProps {
   ads: Ad[]
@@ -43,9 +44,12 @@ export function AdSlideshow({ ads, news = [], defaultDuration = 10 }: AdSlidesho
   const slideRef = useRef<NodeJS.Timeout | null>(null)
 
   // Combine ads and news into a single slideshow
+  // Add placeholder slide when there are no ads
   const slides: SlideItem[] = [
     ...ads.map((ad): SlideItem => ({ type: "ad", data: ad })),
     ...news.map((item): SlideItem => ({ type: "news", data: item })),
+    // Add "Advertise Here" placeholder when no ads exist
+    ...(ads.length === 0 ? [{ type: "placeholder" } as SlideItem] : []),
   ]
 
   // Get duration for current slide
@@ -54,8 +58,11 @@ export function AdSlideshow({ ads, news = [], defaultDuration = 10 }: AdSlidesho
     const currentSlide = slides[currentIndex]
     if (currentSlide.type === "ad") {
       return currentSlide.data.duration_seconds || defaultDuration
-    } else {
+    } else if (currentSlide.type === "news") {
       return currentSlide.data.duration_seconds || 12
+    } else {
+      // Placeholder duration
+      return defaultDuration
     }
   }
 
@@ -90,20 +97,6 @@ export function AdSlideshow({ ads, news = [], defaultDuration = 10 }: AdSlidesho
     }
   }, [currentIndex, slides.length, defaultDuration])
 
-  if (slides.length === 0) {
-    return (
-      <div className="h-full flex items-center justify-center bg-gradient-to-br from-purple-100 to-pink-100">
-        <div className="text-center p-8">
-          <ImageIcon className="h-16 w-16 text-purple-300 mx-auto mb-4" />
-          <p className="text-purple-600 text-lg">No ads to display</p>
-          <p className="text-purple-400 text-sm mt-2">
-            Upload ads in the admin panel
-          </p>
-        </div>
-      </div>
-    )
-  }
-
   const currentSlide = slides[currentIndex]
 
   return (
@@ -117,8 +110,10 @@ export function AdSlideshow({ ads, news = [], defaultDuration = 10 }: AdSlidesho
         >
           {currentSlide.type === "ad" ? (
             <AdSlide ad={currentSlide.data} />
-          ) : (
+          ) : currentSlide.type === "news" ? (
             <NewsSlide news={currentSlide.data} />
+          ) : (
+            <PlaceholderSlide />
           )}
         </div>
       </div>
@@ -136,12 +131,14 @@ export function AdSlideshow({ ads, news = [], defaultDuration = 10 }: AdSlidesho
         <div className="absolute bottom-16 left-0 right-0 flex justify-center gap-2 p-2">
           {slides.map((slide, index) => (
             <div
-              key={`${slide.type}-${slide.type === "ad" ? slide.data.id : slide.data.id}`}
+              key={`${slide.type}-${slide.type === "ad" ? slide.data.id : slide.type === "news" ? slide.data.id : "placeholder"}`}
               className={`h-2 rounded-full transition-all duration-300 ${
                 index === currentIndex
                   ? "w-8 bg-white"
                   : slide.type === "news"
                   ? "w-2 bg-amber-400/50"
+                  : slide.type === "placeholder"
+                  ? "w-2 bg-indigo-400/50"
                   : "w-2 bg-white/40"
               }`}
             />
@@ -241,6 +238,78 @@ function NewsSlide({ news }: { news: NewsItem }) {
           🇨🇾 ΚΥΠΡΙΑΚΗ ΔΗΜΟΚΡΑΤΙΑ • REPUBLIC OF CYPRUS
         </p>
       </div>
+    </div>
+  )
+}
+
+function PlaceholderSlide() {
+  return (
+    <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 relative overflow-hidden">
+      {/* Animated background pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
+                            radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.3) 0%, transparent 50%)`
+        }} />
+      </div>
+      
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col items-center gap-8 p-8 max-w-2xl">
+        {/* Header */}
+        <div className="text-center space-y-2">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white px-4 py-1.5 rounded-full text-sm font-bold tracking-wider uppercase shadow-lg">
+            <span className="animate-pulse">●</span>
+            Διαφημιστικός Χώρος • Ad Space
+          </div>
+        </div>
+
+        {/* QR Code Card */}
+        <div className="bg-white/95 backdrop-blur-sm rounded-3xl p-8 shadow-2xl border border-white/20">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            {/* QR Code */}
+            <div className="bg-white p-4 rounded-2xl shadow-inner border-4 border-indigo-100">
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1')}&bgcolor=ffffff&color=1e1b4b`}
+                alt="Scan to advertise"
+                className="w-44 h-44"
+              />
+            </div>
+            
+            {/* Text content */}
+            <div className="text-center md:text-left space-y-4">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-bold text-slate-800 leading-tight">
+                  Διαφημιστείτε Εδώ!
+                </h2>
+                <h3 className="text-xl font-semibold text-indigo-600">
+                  Advertise Here!
+                </h3>
+              </div>
+              
+              <p className="text-slate-600 text-sm leading-relaxed max-w-xs">
+                Σαρώστε τον κωδικό QR για να μάθετε περισσότερα
+                <br />
+                <span className="text-slate-500">Scan the QR code to learn more</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer tagline */}
+        <div className="text-center space-y-1">
+          <p className="text-indigo-300 text-sm font-medium">
+            Προσεγγίστε χιλιάδες επιβάτες καθημερινά
+          </p>
+          <p className="text-indigo-400/70 text-xs">
+            Reach thousands of passengers daily
+          </p>
+        </div>
+      </div>
+
+      {/* Decorative elements */}
+      <div className="absolute top-10 left-10 w-20 h-20 border-2 border-indigo-500/20 rounded-full animate-pulse" />
+      <div className="absolute bottom-10 right-10 w-32 h-32 border-2 border-purple-500/20 rounded-full animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/2 right-20 w-16 h-16 border-2 border-amber-500/20 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }} />
     </div>
   )
 }

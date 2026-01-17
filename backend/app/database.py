@@ -22,9 +22,9 @@ def get_database_url() -> str:
     """Build database URL from environment variables"""
     # Use postgresql+psycopg for psycopg3 driver
     return (
-        f"postgresql+psycopg://{os.getenv('DB_USER', 'signage')}:{os.getenv('DB_PASSWORD', 'signage_password')}"
+        f"postgresql+psycopg://{os.getenv('DB_USER', 'hackaton')}:{os.getenv('DB_PASSWORD', 'hackaton_password')}"
         f"@{os.getenv('DB_HOST', 'localhost')}:{os.getenv('DB_PORT', 5433)}"
-        f"/{os.getenv('DB_DATABASE', 'bus_signage')}"
+        f"/{os.getenv('DB_DATABASE', 'bus_hackaton')}"
     )
 
 

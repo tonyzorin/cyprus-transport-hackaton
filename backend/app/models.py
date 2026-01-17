@@ -1,6 +1,6 @@
 """
-SQLAlchemy models for Bus Signage application
-Includes GTFS models and signage-specific models
+SQLAlchemy models for Bus Hackaton application
+Includes GTFS models and display-specific models
 """
 from datetime import datetime
 from sqlalchemy import (
@@ -188,7 +188,7 @@ class FareRule(Base):
 
 
 # =============================================================================
-# Signage-specific Models
+# Display-specific Models
 # =============================================================================
 
 class AlertSeverity(enum.Enum):
@@ -199,7 +199,7 @@ class AlertSeverity(enum.Enum):
 
 
 class Ad(Base):
-    """Advertisement content for digital signage"""
+    """Advertisement content for digital displays"""
     __tablename__ = 'ads'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -221,7 +221,7 @@ class Ad(Base):
 
 
 class GovernmentNews(Base):
-    """Government news/announcements for digital signage - bilingual support"""
+    """Government news/announcements for digital displays - bilingual support"""
     __tablename__ = 'government_news'
     
     id = Column(Integer, primary_key=True, autoincrement=True)

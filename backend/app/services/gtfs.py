@@ -60,7 +60,7 @@ class GTFSService:
                         url,
                         headers={
                             'Accept': '*/*',
-                            'User-Agent': 'Bus-Signage/1.0'
+                            'User-Agent': 'Bus-Hackaton/1.0'
                         },
                         follow_redirects=True
                     )
