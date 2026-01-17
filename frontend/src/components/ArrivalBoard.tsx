@@ -147,6 +147,9 @@ export function ArrivalBoard({ stopInfo, arrivals, alerts = [], loading, error }
             <Clock className="h-4 w-4" />
             Real-time data
           </span>
+          <span className="text-blue-400/70 text-xs">
+            Prototype v1.0
+          </span>
           <span>
             Updated: {currentTime.toLocaleTimeString("en-CY", { 
               hour: "2-digit", 
