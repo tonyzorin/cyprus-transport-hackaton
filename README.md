@@ -2,7 +2,7 @@
 
 A digital display system for Cyprus bus stops showing real-time bus arrivals alongside rotating ads, government news, and transport alerts.
 
-![Display Screenshot](screenshot.png)
+![Display Screenshot](display-screenshot.png)
 
 ## Features
 
