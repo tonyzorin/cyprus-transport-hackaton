@@ -1,6 +1,8 @@
-# Bus Hackaton - Cyprus Digital Displays
+# Cyprus Transport Hackaton
 
-A SaaS platform for bus stop digital displays showing real-time bus arrivals alongside rotating ads, government news, and transport alerts.
+A digital display system for Cyprus bus stops showing real-time bus arrivals alongside rotating ads, government news, and transport alerts.
+
+![Display Screenshot](screenshot.png)
 
 ## Features
 
@@ -10,30 +12,6 @@ A SaaS platform for bus stop digital displays showing real-time bus arrivals alo
 - **Transport Alerts**: Service disruption notices with severity levels
 - **50/50 Split Display**: Bus arrivals on left, ads/news on right
 - **Progress Bar**: Shows time remaining until next slide
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Display Screen (50/50 split)             │
-├─────────────────────────────┬───────────────────────────────┤
-│  Stop: Makariou Avenue      │                               │
-│  Stop ID: 4000              │   ┌───────────────────────┐   │
-│                             │   │                       │   │
-│  Route 16  →  5 min  🟢     │   │   Ad / News Slide     │   │
-│  Route 21  →  12 min 🟢     │   │   (mixed slideshow)   │   │
-│  Route 27  →  18 min 🟢     │   │                       │   │
-│                             │   └───────────────────────┘   │
-│                             │                               │
-│  [Alert Banner]             │   [Progress Bar]              │
-│  Real-time data | Updated   │                               │
-└─────────────────────────────┴───────────────────────────────┘
-```
-
-### Content Types
-- **Ads**: Commercial advertisements with images
-- **Government News**: Bilingual slides (Greek/English) mixed with ads
-- **Transport Alerts**: Service disruptions shown above footer on arrivals side
 
 ## Tech Stack
 
@@ -59,8 +37,7 @@ curl -X POST http://localhost:8000/api/gtfs/sync
 
 - **Frontend**: http://localhost:3001
 - **Backend API**: http://localhost:8000
-- **API Docs**: 
-
+- **API Docs**: http://localhost:8000/docs
 
 ## API Endpoints
 
