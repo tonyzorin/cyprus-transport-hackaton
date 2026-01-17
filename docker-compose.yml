@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: bus-signage-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-signage}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-signage_password}
+      POSTGRES_DB: ${DB_DATABASE:-bus_signage}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-signage} -d ${DB_DATABASE:-bus_signage}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Python FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: bus-signage-backend
+    restart: unless-stopped
+    environment:
+      - DB_USER=${DB_USER:-signage}
+      - DB_PASSWORD=${DB_PASSWORD:-signage_password}
+      - DB_DATABASE=${DB_DATABASE:-bus_signage}
+      - DB_HOST=postgres
+      - DB_PORT=5432
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/uploads:/app/uploads
+      - ./gtfs_data:/app/gtfs_data
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: bus-signage-frontend
+    restart: unless-stopped
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:${BACKEND_PORT:-8000}
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+    ports:
+      - "${FRONTEND_PORT:-3001}:3000"
+    depends_on:
+      - backend
+
+networks:
+  default:
+    name: bus-signage-network
